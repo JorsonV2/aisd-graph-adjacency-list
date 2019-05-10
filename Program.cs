@@ -15,14 +15,16 @@ namespace KMolenda.Aisd.Graph
             var graph = new Graph<int>(vertices, edges);
             Console.WriteLine( graph );
 
-            foreach( var vertex in graph.TraverseDeepFirst(start: 1) )
-                System.Console.Write( vertex + " ");
-            
-            Console.WriteLine();
+            string s = "Traverse depth-first:   ";
+            foreach( var vertex in graph.TraverseDepthFirst(start: 1) )
+                s += vertex + " ";
+            Console.WriteLine(s);
+
+            s = "Traverse breadth-first: ";
             foreach( var vertex in graph.TraverseBreadthFirst(start: 1) )
-                System.Console.Write( vertex + " ");
-            
-            Console.WriteLine();
+                s += vertex + " ";
+            Console.WriteLine(s);
+
             int a = 1, b = 4;
             var path = graph.ShortestPath(start: a, end: b);
             Console.WriteLine( $"Shortest path from {a} to {b}: {string.Join(", ", path)}" );

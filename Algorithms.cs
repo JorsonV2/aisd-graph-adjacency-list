@@ -6,7 +6,7 @@ namespace KMolenda.Aisd.Graph
     public static class AlgorithmsExtensions
     {
 
-        public static IEnumerable<T> TraverseDeepFirst<T>(this IGraph<T> graph, T start)
+        public static IEnumerable<T> TraverseDepthFirst<T>(this IGraph<T> graph, T start)
         {
             var visited = new HashSet<T>();
 
