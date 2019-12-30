@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace KMolenda.Aisd.Graph 
+namespace KMolenda.Aisd.Graph
 {
 
     /// <summary>
@@ -21,31 +21,39 @@ namespace KMolenda.Aisd.Graph
         // Dictionary: { 1 -> {2, 3}, 2 -> {1}, 3 -> {1} }
         public Dictionary<T, HashSet<T>> AdjacencyList { get; } = new Dictionary<T, HashSet<T>>();
 
-        public Graph() {}
-        public Graph(IEnumerable<T> vertices, IEnumerable<Tuple<T,T>> edges) 
-        {
-            foreach(var vertex in vertices)
-                AddVertex(vertex);
+        public Graph() { }
 
-            foreach(var edge in edges)
-                AddEdge(edge);
+        public Graph(int initialSize)
+        {
+            AdjacencyList = new Dictionary<T, HashSet<T>>(initialSize);
         }
 
-        public void AddVertex(T vertex) 
+        public Graph(IEnumerable<T> vertices, IEnumerable<Tuple<T, T>> edges)
         {
+            foreach (var vertex in vertices) AddVertex(vertex);
+            foreach (var edge in edges) AddEdge(edge);
+        }
+
+        public bool AddVertex(T vertex)
+        {
+            if( ContainsVertex(vertex) )
+                return false;
+
             AdjacencyList[vertex] = new HashSet<T>();
+            return true;
         }
+
         public bool ContainsVertex(T vertex) => AdjacencyList.ContainsKey(vertex);
 
         public IEnumerable<T> Neighbours(T vertex) => AdjacencyList[vertex];
 
         public IEnumerable<T> Vertices => AdjacencyList.Keys;
 
-        public void AddEdge(T from, T to) => AddEdge( Tuple.Create(from, to) );
+        public bool AddEdge(T from, T to) => AddEdge(Tuple.Create(from, to));
 
-        public bool AddEdge(Tuple<T,T> edge) 
+        public bool AddEdge(Tuple<T, T> edge)
         {
-            if (AdjacencyList.ContainsKey(edge.Item1) && AdjacencyList.ContainsKey(edge.Item2)) 
+            if (AdjacencyList.ContainsKey(edge.Item1) && AdjacencyList.ContainsKey(edge.Item2))
             {
                 AdjacencyList[edge.Item1].Add(edge.Item2);
                 AdjacencyList[edge.Item2].Add(edge.Item1);

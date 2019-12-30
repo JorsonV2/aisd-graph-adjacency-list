@@ -7,7 +7,7 @@ namespace KMolenda.Aisd.Graph
     {
         // dodaje węzeł do grafu
         // jeśli węzeł już istnieje, nadpisuje
-        void AddVertex(V vertex);
+        bool AddVertex(V vertex);
 
         // sprawdza, czy węzeł jest w grafie
         bool ContainsVertex(V vertex);
@@ -19,7 +19,7 @@ namespace KMolenda.Aisd.Graph
         IEnumerable<V> Vertices { get; }
 
         // dodaje krawędź do grafu
-        // jeśli węzłów `from` lub `to` nie ma, nie dodaje
-        void AddEdge(V from, V to);
+        // jeśli węzłów `from` lub `to` nie ma, nie dodaje, zwraca false
+        bool AddEdge(V from, V to);
     }
 }
