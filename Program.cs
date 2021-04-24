@@ -6,33 +6,88 @@ namespace KMolenda.Aisd.Graph
     public class Program {
         public static void Main(string[] args) 
         {
-            var vertices = new[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-            var edges = new[] {Tuple.Create(1,2), Tuple.Create(1,3),
-                Tuple.Create(2,4), Tuple.Create(3,5), Tuple.Create(3,6),
-                Tuple.Create(4,7), Tuple.Create(5,7), Tuple.Create(5,8),
-                Tuple.Create(5,6), Tuple.Create(8,9), Tuple.Create(9,10)};
 
-            var graph = new Graph<int>(vertices, edges);
-            Console.WriteLine( graph );
-
-            string s = "Traverse depth-first:   ";
-            foreach( var vertex in graph.TraverseDepthFirst(start: 1) )
-                s += vertex + " ";
-            Console.WriteLine(s);
-
-            s = "Traverse breadth-first: ";
-            foreach( var vertex in graph.TraverseBreadthFirst(start: 1) )
-                s += vertex + " ";
-            Console.WriteLine(s);
-
-            int a = 1, b = 4;
-            var path = graph.ShortestPath(start: a, end: b);
-            Console.WriteLine( $"Shortest path from {a} to {b}: {string.Join(", ", path)}" );
-
-            foreach( var vertex in graph.Vertices )
+            string[] lines = new string[]
             {
-                var fun = graph.ShortestPathFunc(start: a);
-                Console.WriteLine( $"Shortest path from {a} to {vertex}: {string.Join(", ", fun(vertex))}" );
+                "..###.....#####.....#####",
+                "..###.....#####.....#####",
+                "..###.....#####.....#####",
+                "...........###......#####",
+                "......###...........#####",
+                "...#..###..###......#####",
+                "###############.#######..",
+                "###############.#######.#",
+                "###############.#######..",
+                "................########.",
+                "................#######..",
+                "...#######..##.......##.#",
+                "...#######..##.......##..",
+                "...##...........########.",
+                "#####...........#######..",
+                "#####...##..##..#...#...#",
+                "#####...##..##....#...#.."
+            };
+
+            List<Tuple<int, int>> mapVerticies = new List<Tuple<int, int>>();
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                for (int j = 0; j < lines[0].Length; j++)
+                {
+                    if (lines[i][j] == '.')
+                        mapVerticies.Add(Tuple.Create(i, j));
+                }
+            }
+
+            List<Tuple<Tuple<int, int>, Tuple<int, int>>> mapEdges = new List<Tuple<Tuple<int, int>, Tuple<int, int>>>();
+
+            foreach (var item in mapVerticies)
+            {
+                Tuple<Tuple<int, int>, Tuple<int, int>> newEdge;
+
+                if (item.Item2 + 1 < lines[0].Length)
+                    if (lines[item.Item1][item.Item2 + 1] == '.')
+                    {
+                        newEdge = Tuple.Create(item, Tuple.Create(item.Item1, item.Item2 + 1));
+                        if (!mapEdges.Contains(Tuple.Create(Tuple.Create(item.Item1, item.Item2 + 1), item)))
+                            mapEdges.Add(newEdge);        
+                    }
+
+                if (item.Item1 + 1 < lines.Length)
+                    if (lines[item.Item1 + 1][item.Item2] == '.')
+                    {
+                        newEdge = Tuple.Create(item, Tuple.Create(item.Item1 + 1, item.Item2));
+                        if (!mapEdges.Contains(Tuple.Create(Tuple.Create(item.Item1 + 1, item.Item2), item)))
+                            mapEdges.Add(newEdge);
+                    }
+            }
+
+            var mapGraph = new Graph<Tuple<int, int>>(mapVerticies, mapEdges);
+
+            Tuple<int,int> start = Tuple.Create(0,0), end = Tuple.Create(16, 24);
+            var mapPath = mapGraph.ShortestPath(start: start, end: end);
+
+            var pathVertices = new List<Tuple<int,int>>(mapPath);
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                for (int j = 0; j < lines[0].Length; j++)
+                {
+                    ConsoleColor color = ConsoleColor.White;
+                    if (lines[i][j] == '#')
+                        color = ConsoleColor.Red;
+                    else
+                    {
+                        color = ConsoleColor.White;
+                        if (pathVertices.Contains(Tuple.Create(i, j)))
+                            color = ConsoleColor.Green;
+
+                    }
+                    Console.BackgroundColor = color;
+                    Console.Write(" ");
+                    Console.ResetColor();
+                }
+                Console.WriteLine();
             }
         }
     }
